@@ -10,12 +10,5 @@
     <div id="root"></div>
     <script src="https://accounts.google.com/gsi/client" async></script>
     <script type="module" src="/src/main.tsx"></script>
-    <script src="./node_modules/fhirclient/build/fhir-client.js"></script>
-    <script>
-      FHIR.oauth2.authorize({
-          "client_id": "1bad17a6-bbeb-4364-994a-4e2dd1fa090d",
-          "scope": "patient/*.read"
-        });
-    </script>
   </body>
 </html>

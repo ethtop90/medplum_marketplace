@@ -8,9 +8,24 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { App } from './App';
 
+// const medplum = new MedplumClient({
+//   onUnauthenticated: () => (window.location.href = '/'),
+//   // baseUrl: 'http://localhost:8103/', //Uncomment this to run against the server on your localhost; also change `googleClientId` in `./pages/SignInPage.tsx`
+// });
+
+console.log("epic start");
+const clientId = "29acf640-9580-4d2b-aa31-46c244e99042";
+const baseUrl = 'https://fhir.epic.com/interconnect-fhir-oauth/';
+const tokenUrl = 'https://fhir.epic.com/interconnect-fhir-oauth/oauth2/token';
+const fhirUrlPath = 'api/FHIR/R4/';
+
+// Construct Epic MedplumClient base
 const medplum = new MedplumClient({
-  onUnauthenticated: () => (window.location.href = '/'),
-  // baseUrl: 'http://localhost:8103/', //Uncomment this to run against the server on your localhost; also change `googleClientId` in `./pages/SignInPage.tsx`
+    fetch,
+    baseUrl,
+    tokenUrl,
+    fhirUrlPath,
+    clientId,
 });
 
 const theme = createTheme({

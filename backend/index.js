@@ -32,8 +32,6 @@ async function generateJWT() {
       exp: getIntFromDateTime(new Date(Date.now() + 5 * 60000)), // 5 minutes later
     };
 
-    console.log(message);
-
     // Load an RSA key from a PEM file
     const signingKey = fs.readFileSync("./privatekey.pem", {
       encoding: "utf8",
@@ -41,7 +39,6 @@ async function generateJWT() {
 
     // Encode the JWT
     const compactJws = jwt.sign(message, signingKey, { algorithm: "RS384" });
-    console.log(compactJws);
 
     const headers = {
       "Content-Type": "application/x-www-form-urlencoded",
@@ -60,7 +57,6 @@ async function generateJWT() {
       data,
       { headers }
     );
-    console.log(response.data);
     return response.data.access_token;
   } catch (error) {
     console.error(error.response ? error.response.data : error.message);
