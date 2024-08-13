@@ -1,0 +1,5 @@
+{
+  "private_key": "",
+  "client_id": "29acf640-9580-4d2b-aa31-46c244e99042",
+  "token_url": "https://fhir.epic.com/interconnect-fhir-oauth/oauth2/token"
+}
