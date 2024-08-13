@@ -6,6 +6,11 @@ const bodyParser = require("body-parser");
 const crypto = require("crypto");
 
 const config = require("./config.json");
+const hostURL = config.host_url;
+const patientList = require("./patients_list.json");
+const testItemList = require("./test_items_list.json");
+const endPoints = require("./endpoints.json");
+
 
 const app = express();
 app.use(bodyParser.json());
@@ -33,11 +38,6 @@ async function generateJWT() {
     const signingKey = fs.readFileSync("./privatekey.pem", {
       encoding: "utf8",
     });
-
-    // fs.readFile("./privatekey.pem", "ascii", function (pemContents) {
-    //   // do whatever you want here
-    //   console.log(pemContents);
-    // });
 
     // Encode the JWT
     const compactJws = jwt.sign(message, signingKey, { algorithm: "RS384" });
@@ -71,8 +71,40 @@ async function generateJWT() {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+
   generateJWT().then(res => {
     ACCESSTOKEN = res;
     if (ACCESSTOKEN) console.log(ACCESSTOKEN);
   });
+
+});
+
+// Endpoint to handle /patients-list request
+app.get('/patients-list', async (req, res) => {
+  try {
+    // Create an array to hold the patient data
+    const patientData = [];
+
+    // Loop through each patient in the patientList
+    for (const patient of patientList) {
+      const patientURL = `${hostURL}${endPoints["Patient.Read"]}${patient}`; // Construct the URL for each patient
+
+      // Make a request to the FHIR API to get patient data
+      const response = await axios.get(patientURL, {
+        headers: {
+          "Accept": "application/fhir+json",
+          "Authorization": `Bearer ${ACCESSTOKEN}` // Use the token in the Authorization header
+        }
+      });
+
+      // Push the patient data into the patientData array
+      patientData.push(response.data);
+    }
+
+    // Respond with the patient data
+    res.json(patientData);
+  } catch (error) {
+    console.error(error.response ? error.response.data : error.message);
+    res.status(500).json({ error: 'Failed to fetch patient data' });
+  }
 });
